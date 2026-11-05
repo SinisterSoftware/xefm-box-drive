@@ -1,0 +1,22 @@
+[extension]
+id = "box-drive"
+version = "0.1.0"
+api_version = 1
+name = "Box Drive"
+description = "Convert Box Drive paths and URLs and open clipboard locations."
+min_xefm = "1.10.0"
+platforms = ["windows"]
+updates = "github:SinisterSoftware/xefm-box-drive"
+
+[contributes.actions]
+"box.url-from-cursor" = { entry = "box_drive.actions:url_from_cursor", description = "Convert current item to a Box URL" }
+"box.url-from-panel" = { entry = "box_drive.actions:url_from_panel", description = "Convert current folder to a Box URL" }
+"box.open-clipboard" = { entry = "box_drive.actions:open_clipboard", description = "Open a Box URL or local path from the clipboard" }
+
+[requires]
+python_packages = ["pywin32"]
+
+[contributes.key_suggestions]
+"box.url-from-cursor" = ["Alt-U"]
+"box.url-from-panel" = ["Shift-Alt-U"]
+"box.open-clipboard" = ["Alt-Shift-J"]

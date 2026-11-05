@@ -1,6 +1,6 @@
 [extension]
 id = "box-drive"
-version = "0.1.0"
+version = "0.1.1"
 api_version = 1
 name = "Box Drive"
 description = "Convert Box Drive paths and URLs and open clipboard locations."

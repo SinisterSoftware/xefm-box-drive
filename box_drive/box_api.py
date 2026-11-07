@@ -1,10 +1,14 @@
-"""Box API による Drive パス ⇔ Box URL 変換 (~/.xefm/extensions/box_api.py)
+r"""Box API による Drive パス ⇔ Box URL 変換。
 
 box.py の sync.db 方式で解決できない時 (共有リンク等) のフォールバック。標準ライブラリのみ。
 
-初回だけ認証が必要。XeFM の中ではブラウザ待ちで固まるので、ターミナルで一度実行する:
+Box API を使う場合だけ初回認証が必要。XeFM の中ではブラウザ待ちで固まるので、
+インストール済みパッケージなら PowerShell から一度実行する:
 
-    python box_api.py auth
+    py -3 "$HOME\.xefm\extensions\box-drive\box_drive\box_api.py" auth
+
+Python 3.10 以上が必要。モジュールは標準ライブラリのみを使うため、XeFM 専用の
+Python 環境ではなく、通常の Python を実行できる。
 
 認証情報 (Box Developer Console の Custom App / OAuth 2.0) は次のどちらかに置く:
   - 環境変数  BOX_CLIENT_ID / BOX_CLIENT_SECRET
@@ -42,7 +46,7 @@ _AUTH_TIMEOUT = 120
 
 _HTTP_ERRORS = {
     400: "リクエストの形式が正しくありません。",
-    401: "認証に失敗しました。`python box_api.py auth` で再認証してください。",
+    401: "認証に失敗しました。README の PowerShell コマンドで再認証してください。",
     403: "このアイテムへのアクセス権がありません。",
     404: "指定されたアイテムが見つかりませんでした。IDやURLを確認してください。",
     429: "APIのリクエスト制限に達しました。しばらく待ってから再試行してください。",
@@ -133,8 +137,9 @@ def load_credentials() -> tuple[str, str, int]:
 class _TokenStore:
     """access / refresh token の保存と更新。"""
 
-    def __init__(self, client_id: str, client_secret: str, path: Path = TOKEN_PATH):
-        self._id, self._secret, self._path = client_id, client_secret, path
+    def __init__(self, client_id: str, client_secret: str, path: Path | None = None):
+        self._id, self._secret = client_id, client_secret
+        self._path = TOKEN_PATH if path is None else path
         self.access = ""
         self._refresh = ""
 
@@ -260,7 +265,7 @@ class BoxPathConverter:
         cid, secret, _port = load_credentials()
         tokens = _TokenStore(cid, secret)
         if not tokens.load():
-            raise BoxApiError("Box API が未認証です。ターミナルで `python box_api.py auth` を実行してください。")
+            raise BoxApiError("Box API が未認証です。README の PowerShell コマンドで認証してください。")
         self._s = _Session(tokens)
 
     # ---- 公開 API ----
@@ -369,4 +374,4 @@ if __name__ == "__main__":
     if sys.argv[1:] == ["auth"]:
         authenticate()
     else:
-        sys.stdout.write("usage: python box_api.py auth\n")
+        sys.stdout.write("usage: python box_drive/box_api.py auth\n")

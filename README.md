@@ -2,6 +2,8 @@
 
 XeFM extension for Windows that converts Box Drive paths and URLs and opens clipboard locations.
 
+[日本語の説明](README.ja.md)
+
 ## Install
 
 ```powershell
